@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Finance App{% endblock %}
+
+{% block content %}
+    <div class="text-center card">
+        <h2 class="card-title">Welcome to the Financial Notification Service!</h2>
+        <p>Stay updated with the latest prices for Bitcoin and Gold directly to your Telegram.</p>
+
+        {% if current_user.is_anonymous %}
+            <div class="mt-20">
+                <a href="{{ url_for('auth.login') }}" class="btn">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Register</a>
+            </div>
+            <p class="mt-20">Please login or register to access your dashboard and set up notifications.</p>
+        {% else %}
+            <p>You are logged in as <strong>{{ current_user.email }}</strong>.</p>
+            <div class="mt-20">
+                <a href="{{ url_for('main.dashboard') }}" class="btn">Go to Dashboard</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="card mt-20">
+        <h3>Features:</h3>
+        <ul>
+            <li>Real-time price tracking for Bitcoin (BTC-USD) and Gold (GC=F).</li>
+            <li>Secure user authentication.</li>
+            <li>Personalized Telegram notifications.</li>
+            <li>Easy to use interface.</li>
+        </ul>
+    </div>
+{% endblock %}

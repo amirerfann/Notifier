@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Finance App{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h2 class="card-title">Welcome, {{ current_user.email }}!</h2>
+        <p>This is your main dashboard where you can view financial data and manage your notification settings.</p>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Market Data</h3>
+        <div class="api-data">
+            <p class="data-item">Bitcoin (BTC-USD): <strong id="bitcoin-price">Loading...</strong></p>
+            <p class="data-item">Gold (GC=F): <strong id="gold-price">Loading...</strong></p>
+        </div>
+        <small>Data is fetched live via API.</small>
+    </div>
+
+    <div class="card">
+        <h3 class="card-title">Telegram Notifications</h3>
+        {% if not current_user.telegram_chat_id %}
+            <p>Your Telegram account is not linked.</p>
+            <a href="{{ url_for('auth.link_telegram') }}" class="btn">Link your Telegram Account</a>
+            <p class="mt-20"><small>To receive notifications, please link your Telegram account. You'll need to provide your Telegram Chat ID, which you can get by messaging our bot (details on the link page).</small></p>
+        {% else %}
+            <p>Your Telegram account is linked (Chat ID: {{ current_user.telegram_chat_id }}).</p>
+            <p>You can receive instant price notifications on Telegram.</p>
+            <button id="notify-bitcoin" class="btn">Notify Bitcoin Price</button>
+            <button id="notify-gold" class="btn btn-secondary">Notify Gold Price</button>
+            <p class="mt-20"><a href="{{ url_for('auth.link_telegram') }}" class="btn btn-secondary">Update Telegram Chat ID</a></p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts_extra %}
+    {# Specific scripts for dashboard if any, main.js is already included in base.html #}
+    {# The main.js already has event listeners for buttons with IDs: #}
+    {# notify-bitcoin, notify-gold and elements with IDs: bitcoin-price, gold-price #}
+{% endblock %}

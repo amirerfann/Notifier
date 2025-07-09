@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}Link Telegram Account - Finance App{% endblock %}
+
+{% block content %}
+    <div class="card auth-form">
+        <h2 class="card-title text-center">Link Your Telegram Account</h2>
+
+        <p>To link your Telegram account for notifications, please provide your Telegram Chat ID below.</p>
+        <p><strong>How to get your Chat ID:</strong></p>
+        <ol>
+            <li>Open Telegram and search for the bot: <strong><code>{{ current_app.config.get('TELEGRAM_BOT_USERNAME', 'YourAppBotName_bot') }}</code></strong> (replace with actual bot username).</li>
+            <li>Send the <code>/start</code> command to the bot.</li>
+            <li>The bot will reply with your unique Chat ID.</li>
+            <li>Copy that Chat ID and paste it into the form below.</li>
+        </ol>
+
+        {% if current_user.telegram_chat_id %}
+        <div class="alert alert-info">
+            Your account is currently linked to Chat ID: <strong>{{ current_user.telegram_chat_id }}</strong>.
+            You can update it below if needed.
+        </div>
+        {% endif %}
+
+        <form id="link-telegram-form" action="{{ url_for('auth.link_telegram') }}" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.chat_id.label(class="form-label") }}<br>
+                {{ form.chat_id(class="form-control", size=32, placeholder="Enter your Telegram Chat ID") }}<br>
+                {% if form.chat_id.errors %}
+                    {% for error in form.chat_id.errors %}
+                    <span class="text-danger">[{{ error }}]</span><br>
+                    {% endfor %}
+                {% endif %}
+            </p>
+            <p>{{ form.submit(class="btn btn-primary btn-block") }}</p>
+        </form>
+        <p class="text-center mt-20">
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </p>
+    </div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+// Optional: Add JS enhancement for this form if needed, e.g., for real-time validation or AJAX submission.
+// For now, it relies on standard form submission as handled by main.js (if form ID matches) or backend.
+// The main.js does not currently have specific logic for 'link-telegram-form' by default.
+// If we want AJAX submission for this form:
+/*
+document.addEventListener('DOMContentLoaded', function() {
+    const linkTelegramForm = document.getElementById('link-telegram-form');
+    if (linkTelegramForm) {
+        linkTelegramForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(linkTelegramForm);
+            const chat_id = formData.get('chat_id');
+
+            // We would need an API endpoint for this, e.g., /api/user/link_telegram
+            // The current auth.link_telegram route is designed for traditional form posts and redirects.
+            // If an API endpoint is created:
+            // try {
+            //     const response = await fetch('/api/user/link_telegram', {
+            //         method: 'POST',
+            //         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token() if csrf_token else "" }}' }, // If CSRF is needed
+            //         body: JSON.stringify({ chat_id: chat_id })
+            //     });
+            //     const data = await response.json();
+            //     if (data.success) {
+            //         showAlert('Telegram Chat ID updated successfully!', 'success');
+            //         // Optionally update UI or redirect
+            //         setTimeout(() => window.location.href = "{{ url_for('main.dashboard') }}", 2000);
+            //     } else {
+            //         showAlert(data.message || 'Failed to update Telegram Chat ID.', 'danger');
+            //     }
+            // } catch (error) {
+            //     showAlert('An error occurred: ' + error.toString(), 'danger');
+            // }
+        });
+    }
+});
+*/
+</script>
+{% endblock %}
